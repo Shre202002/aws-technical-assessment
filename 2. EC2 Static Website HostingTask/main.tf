@@ -7,57 +7,57 @@ terraform {
   }
 }
 
-resource "aws_vpc" "vishnu_pandey_vpc" {
+resource "aws_vpc" "sriyash_vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
 
   tags = {
-    Name = "vishnu_pandey_vpc"
+    Name = "sriyansh_vpc"
   }
 }
 
-resource "aws_internet_gateway" "vishnu_pandey_igw" {
-  vpc_id = aws_vpc.vishnu_pandey_vpc.id
+resource "aws_internet_gateway" "sriyansh_igw" {
+  vpc_id = aws_vpc.sriyansh_vpc.id
 
   tags = {
-    Name = "vishnu_pandey_igw"
+    Name = "sriyansh_igw"
   }
 }
 
-resource "aws_subnet" "vishnu_pandey_public_subnet" {
-  vpc_id                  = aws_vpc.vishnu_pandey_vpc.id
+resource "aws_subnet" "sriyansh_public_subnet" {
+  vpc_id                  = aws_vpc.sriyansh_vpc.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
   availability_zone       = "ap-south-1a"
 
   tags = {
-    Name = "vishnu_pandey_public_subnet"
+    Name = "sriyansh_public_subnet"
   }
 }
 
-resource "aws_route_table" "vishnu_pandey_public_rt" {
-  vpc_id = aws_vpc.vishnu_pandey_vpc.id
+resource "aws_route_table" "sriyansh_public_rt" {
+  vpc_id = aws_vpc.sriyansh_vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.vishnu_pandey_igw.id
+    gateway_id = aws_internet_gateway.sriyansh_igw.id
   }
 
   tags = {
-    Name = "vishnu_pandey_public_rt"
+    Name = "sriyansh_public_rt"
   }
 }
 
-resource "aws_route_table_association" "vishnu_pandey_public_rta" {
-  subnet_id      = aws_subnet.vishnu_pandey_public_subnet.id
-  route_table_id = aws_route_table.vishnu_pandey_public_rt.id
+resource "aws_route_table_association" "sriyansh_public_rta" {
+  subnet_id      = aws_subnet.sriyansh_public_subnet.id
+  route_table_id = aws_route_table.sriyansh_public_rt.id
 }
 
-resource "aws_security_group" "vishnu_pandey_sg" {
-  name        = "vishnu_pandey_sg"
+resource "aws_security_group" "sriyansh_sg" {
+  name        = "sriyansh_sg"
   description = "Allow HTTP and SSH"
-  vpc_id      = aws_vpc.vishnu_pandey_vpc.id
+  vpc_id      = aws_vpc.sriyansh_vpc.id
 
   ingress {
     description = "HTTP"
@@ -83,12 +83,12 @@ resource "aws_security_group" "vishnu_pandey_sg" {
   }
 
   tags = {
-    Name = "vishnu_pandey_sg"
+    Name = "sriyansh_sg"
   }
 }
 
-resource "aws_iam_role" "vishnu_pandey_ec2_role" {
-  name = "vishnu_pandey_ec2_role"
+resource "aws_iam_role" "sriyansh_ec2_role" {
+  name = "sriyansh_ec2_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -104,27 +104,27 @@ resource "aws_iam_role" "vishnu_pandey_ec2_role" {
   })
 
   tags = {
-    Name = "vishnu_pandey_ec2_role"
+    Name = "sriyansh_ec2_role"
   }
 }
 
-resource "aws_iam_instance_profile" "vishnu_pandey_instance_profile" {
-  name = "vishnu_pandey_instance_profile"
-  role = aws_iam_role.vishnu_pandey_ec2_role.name
+resource "aws_iam_instance_profile" "sriyansh_instance_profile" {
+  name = "sriyansh_instance_profile"
+  role = aws_iam_role.sriyansh_ec2_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "vishnu_pandey_ssm_policy" {
-  role       = aws_iam_role.vishnu_pandey_ec2_role.name
+resource "aws_iam_role_policy_attachment" "sriyansh_ssm_policy" {
+  role       = aws_iam_role.sriyansh_ec2_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_instance" "vishnu_pandey_ec2" {
+resource "aws_instance" "sriyansh_ec2" {
   ami                    = "ami-0f5ee92e2d63afc18"
   instance_type          = "t3.micro"
-  subnet_id              = aws_subnet.vishnu_pandey_public_subnet.id
-  vpc_security_group_ids = [aws_security_group.vishnu_pandey_sg.id]
-  iam_instance_profile   = aws_iam_instance_profile.vishnu_pandey_instance_profile.name
-  key_name               = aws_key_pair.vishnu_pandey_key.key_name
+  subnet_id              = aws_subnet.sriyansh_public_subnet.id
+  vpc_security_group_ids = [aws_security_group.sriyansh_sg.id]
+  iam_instance_profile   = aws_iam_instance_profile.sriyansh_instance_profile.name
+  key_name               = aws_key_pair.sriyansh_key.key_name
 
   user_data = <<-EOF
               #!/bin/bash
@@ -240,16 +240,16 @@ resource "aws_instance" "vishnu_pandey_ec2" {
               EOF
 
   tags = {
-    Name = "vishnu_pandey_ec2"
+    Name = "sriyansh_ec2"
   }
 }
 
-resource "aws_key_pair" "vishnu_pandey_key" {
-  key_name   = "vishnu_pandey_key"
+resource "aws_key_pair" "sriyansh_key" {
+  key_name   = "sriyansh_key"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCU0psELucFow+jlyF+/5uiLdI+BNMu2BBIIxaH6ktkWsadq9Ft7BYO2lQPAeGmHBPCs+B2BeePRETEnvM+LmxVKL11neVJiraUjvFnpF86nMkjd2WChahvGJ6VZmocVqUOciYmvQVwqaINlq92cuBDfoe5zzfcWWocZ/r5owi3sIHz8AC3NWYziLahJbrdbH6sZalpSjOxkCR5ar9LdLPqjysvoKbtqP5NDSbPbWZIC88bBBz2RV2xDm+RONN1ELxYp6WQU+DEqiXGCah5QDOjjCjdRBodM3DAEhnhpqPXY5oXd+tS2/OHa1WNtrIT/Q7KAzfBswSwMrcmgWOMrhsz vishnupandey@fedora"
 }
 
-resource "aws_cloudwatch_log_group" "vishnu_pandey_log_group" {
-  name              = "/aws/ec2/vishnu_pandey_ec2"
+resource "aws_cloudwatch_log_group" "sriyansh_log_group" {
+  name              = "/aws/ec2/sriyansh_ec2"
   retention_in_days = 7
 }
