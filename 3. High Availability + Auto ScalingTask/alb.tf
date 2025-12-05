@@ -1,20 +1,20 @@
-resource "aws_lb" "vishnu_pandey_alb" {
+resource "aws_lb" "Sriyansh_alb" {
   name               = "vishnu-pandey-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.vishnu_pandey_alb_sg.id]
-  subnets            = aws_subnet.vishnu_pandey_public_subnet[*].id
+  security_groups    = [aws_security_group.Sriyansh_alb_sg.id]
+  subnets            = aws_subnet.Sriyansh_public_subnet[*].id
 
   tags = {
-    Name = "vishnu_pandey_alb"
+    Name = "Sriyansh_alb"
   }
 }
 
-resource "aws_lb_target_group" "vishnu_pandey_tg" {
+resource "aws_lb_target_group" "Sriyansh_tg" {
   name     = "vishnu-pandey-tg"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = aws_vpc.vishnu_pandey_vpc.id
+  vpc_id   = aws_vpc.Sriyansh_vpc.id
 
   health_check {
     path                = "/"
@@ -26,17 +26,17 @@ resource "aws_lb_target_group" "vishnu_pandey_tg" {
   }
 
   tags = {
-    Name = "vishnu_pandey_tg"
+    Name = "Sriyansh_tg"
   }
 }
 
-resource "aws_lb_listener" "vishnu_pandey_listener" {
-  load_balancer_arn = aws_lb.vishnu_pandey_alb.arn
+resource "aws_lb_listener" "Sriyansh_listener" {
+  load_balancer_arn = aws_lb.Sriyansh_alb.arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.vishnu_pandey_tg.arn
+    target_group_arn = aws_lb_target_group.Sriyansh_tg.arn
   }
 }
